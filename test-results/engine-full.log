@@ -1,0 +1,9 @@
+STATUS=1
+STDOUT:
+PASS: equal movement distance at 30 and 60 FPS
+PASS: chapter menu → Proposal, live player, visible camera, clear fade, unlocked input
+
+STDERR:
+    at C:\Users\L\Desktop\пока горит свет\tests\engine-transition-verify.cjs:93:22
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processTimers (node:internal/timers:520:9)
