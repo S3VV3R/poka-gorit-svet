@@ -1,0 +1,20 @@
+#orientation-gate { display:none; }
+@media all {
+  html[data-orientation-blocked="true"] #orientation-gate {
+    position:fixed; inset:0; height:100dvh; z-index:20000;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding:32px max(24px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
+    box-sizing:border-box; background:#080808; color:#fff; text-align:center;
+    font:16px/1.6 system-ui,sans-serif;
+  }
+  #orientation-gate h1 { font:normal 26px/1.3 Georgia,serif; margin:36px 0 12px; }
+  #orientation-gate p { max-width:340px; margin:0 0 12px; }
+  #orientation-gate small { color:#aaa; }
+  .rotate-phone { width:54px; height:92px; border:3px solid #fff; border-radius:10px; position:relative; animation:turn-phone 2.8s ease-in-out infinite; }
+  .rotate-phone::before { content:''; position:absolute; width:18px; height:3px; border-radius:2px; background:#fff; left:15px; top:7px; }
+  .rotate-phone::after { content:'↻'; position:absolute; font:46px/1 Georgia,serif; left:70px; top:20px; }
+  @keyframes turn-phone { 0%,15% { transform:rotate(0deg); } 55%,85% { transform:rotate(90deg); } 100% { transform:rotate(0deg); } }
+  html[data-orientation-blocked="true"] :is(#game-wrap,#adaptive-ui,#life-book,#life-buttons,#boot-msg) { visibility:hidden!important; }
+}
+@media (prefers-reduced-motion:reduce) { .rotate-phone { animation:none!important; transform:rotate(90deg); } }
+#game-version { position:fixed; left:8px; bottom:4px; z-index:20001; font:11px system-ui,sans-serif; color:#888; pointer-events:none; }
