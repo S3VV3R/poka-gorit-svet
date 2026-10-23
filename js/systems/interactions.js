@@ -38,7 +38,8 @@ class InteractionSystem {
       if (!item.enabled) continue;
       if (item.follow) { item.x = item.follow.sprite.x; item.y = item.follow.sprite.y; }
       const d = Phaser.Math.Distance.Between(player.sprite.x, player.sprite.y, item.x, item.y);
-      if (d <= item.radius && d < bestDist) { best = item; bestDist = d; }
+      const priority = item.priority || 0, currentPriority = best?.priority || 0;
+      if (d <= item.radius && (!best || priority > currentPriority || (priority === currentPriority && d < bestDist))) { best = item; bestDist = d; }
     }
     if (best !== this.active) {
       this.active = best;

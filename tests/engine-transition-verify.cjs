@@ -176,5 +176,6 @@ process.on('unhandledRejection',e=>{errorReport(e);process.exit(1)});
  const restored=game.scene.getScene('Apartment');restored.cameras.main.preRender(1);
  assert.ok(restored.cameras.main.worldView.contains(restored.player.sprite.x,restored.player.sprite.y));
  console.log('PASS: manual checkpoint load from pause, old scenes stopped, live apartment, visible camera and clear fade');
+ if(process.argv.includes('--home-tests'))await require('./support/kids-kitchen-engine.cjs')({game,ctx,frames,ui});
  game.destroy(true);process.exit(0);
 })().catch(e=>{errorReport(e);process.exit(1)});

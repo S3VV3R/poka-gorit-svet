@@ -2,6 +2,7 @@ class KidsScene extends HouseScene {
   constructor() { super('Kids'); }
 
   create() {
+    this.kitchenTask = null;
     GameState.chapter = 'kids';
     GameState.ageStage = 'young';
     this.houseCreate({ era: 'kids', tint: 0xffe4b8, tintAlpha: 0.08, ambience: 'home' });
@@ -14,7 +15,7 @@ class KidsScene extends HouseScene {
     this.nia = this.spawnKid('nia_kid', 232.12, 165.14, 'left');
     this.kidWander = { x: [144.76, 251.53], y: [113.71, 186.57] };
     this.hallFlavour();
-    this.safeRun(() => this.morning());
+    if (!KidsKitchen.restore(this)) this.safeRun(() => this.morning());
   }
 
   // flavour interactions that exist throughout the chapter
@@ -288,12 +289,7 @@ class KidsScene extends HouseScene {
     await this.unfocus();
     this.unlockInput();
     this.quarrelTrigger = true;
-    this.ui.setQuest('Помыть посуду');
-    this.interactions.add( 296.82, 49.43, 28, 'помыть посуду', () => {
-      if (!this.need('wash1')) return;
-      this.mark('wash1');
-      this.safeRun(() => this.quarrelBella());
-    });
+    KidsKitchen.set(this,'dishes');
   }
 
   // ---------------- C. ссора с Беллой (первая большая)
@@ -353,6 +349,7 @@ class KidsScene extends HouseScene {
       addStat('avoid');
     }
     GameState.flags.quarrelBella = true;
+    GameState.flags.kidsKitchenStage = 'tidy';
     SaveSystem.save();
     this.tamir.moveTo( 283.88, 96.57);
     await wait(this, 800);
@@ -370,12 +367,7 @@ class KidsScene extends HouseScene {
     adjustRelationship({ trust: 1, closeness: 1 });
     await this.unfocus();
     this.unlockInput();
-    this.ui.setQuest('Закончить уборку на кухне');
-    this.interactions.add( 309.76, 127.43, 30, 'вернуться к посуде', () => {
-      if (!this.need('night')) return;
-      this.mark('night');
-      this.safeRun(() => this.quarrelParents());
-    });
+    KidsKitchen.set(this,'tidy');
   }
 
   // ---------------- D. ссора родителей + примирение (мытьё кухни)
@@ -436,17 +428,14 @@ class KidsScene extends HouseScene {
       this.reconcile = true;
     }
     adjustRelationship({ closeness: this.reconcile ? 1 : -1 });
+    GameState.flags.kidsKitchenStage = 'together';
+    GameState.flags.kidsKitchenReconcile = this.reconcile;
     SaveSystem.save();
     await wait(this, 500);
     await this.ui.caption('Тамир начинает убирать со стола. Настя молча берёт другую тарелку.', 3200);
     await this.unfocus();
     this.unlockInput();
-    this.ui.setQuest('Помыть кухню вместе');
-    this.interactions.add( 309.76, 129.14, 34, 'вместе помыть кухню', () => {
-      if (!this.need('washK')) return;
-      this.mark('washK');
-      this.safeRun(() => this.washKitchen());
-    });
+    KidsKitchen.set(this,'together');
   }
 
   async washKitchen() {
@@ -497,6 +486,8 @@ class KidsScene extends HouseScene {
     ]);
     if (this.reconcile) addStat('reconciled');
     GameState.flags.kitchenWashed = true;
+    GameState.flags.kidsKitchenStage = 'graduation';
+    KidsKitchen.clear(this);
     SaveSystem.save();
     await this.unfocus();
     await this.ui.fadeOut(700);

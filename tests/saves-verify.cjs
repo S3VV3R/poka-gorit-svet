@@ -39,7 +39,7 @@ ui.game={scene:{getScenes:()=>[],stop(){},start(k){this.started=k;}}};
   const legacy={chapter:'kids',flags:{metTamir:true},relationship:{trust:4}};
   storage.set(key,JSON.stringify(legacy));assert.equal(S.load(),true);
   assert.equal(api.state.relationship.trust,4);assert.equal(api.state.settings.textSize,'normal');assert.equal(T.step(),null);
-  assert.equal(S.save(),true);assert.equal(JSON.parse(storage.get(key)).version,'1.1.3');
+  assert.equal(S.save(),true);assert.equal(JSON.parse(storage.get(key)).version,JSON.parse(fs.readFileSync(path.join(__dirname,'../package.json'),'utf8')).version);
   const encoded=F.encode(api.state);assert.equal(F.parse(encoded).state.chapter,'kids');
   assert.ok(F.parse(encoded).savedAt);assert.equal(F.parse(JSON.stringify(legacy)).savedAt,null);
   const bad=['{','null','[]','{"chapter":"unknown","flags":{}}','{"chapter":"street","flags":{"__proto__":{}}}',

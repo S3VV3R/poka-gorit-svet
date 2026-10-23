@@ -76,7 +76,7 @@ const SaveFormat = {
     return { state: this.normalize(wrapped ? data.state : data), savedAt: wrapped && typeof data.savedAt === 'string' && Number.isFinite(Date.parse(data.savedAt)) ? data.savedAt : null };
   },
   encode(state) {
-    const text = JSON.stringify({ game:'poka-gorit-svet', format:1, version:'1.1.3', savedAt:new Date().toISOString(), state:this.normalize(state) });
+    const text = JSON.stringify({ game:'poka-gorit-svet', format:1, version:'1.1.4', savedAt:new Date().toISOString(), state:this.normalize(state) });
     if (text.length > this.maxBytes) throw new Error('Сохранение слишком большое.');
     return text;
   },

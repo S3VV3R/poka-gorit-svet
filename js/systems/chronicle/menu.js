@@ -66,6 +66,7 @@ render(tab,focusTab=false){
     const card=(title,body)=>{const a=document.createElement('article'),h=document.createElement('h3'),p=document.createElement('small');h.textContent=title;p.textContent=body;a.append(h,p);grid.append(a);return a;};
     const button=(a,label,fn,disabled=false)=>{const b=document.createElement('button');b.textContent=label;b.disabled=!!disabled;b.onclick=fn;a.append(b);return b;};
     if(tab==='Дела'){
+      if(sc.kitchenTask && !sc.kitchenTask.running)button(main,'По сюжету: '+sc.kitchenTask.title,()=>this.launch(source=>KidsKitchen.run(source)));
       const help=document.createElement('details'),summaryHelp=document.createElement('summary'),helpText=document.createElement('p');
       summaryHelp.textContent='Как выбрать занятие?';
       helpText.textContent='Выбери занятие и нажми «Начать». Время пройдёт после дела; покупки и воспоминания сохранятся.'+(sc._homeLife?' Можно подойти к мебели и удерживать E или сенсорную кнопку «Действие».':'');
@@ -139,5 +140,13 @@ render(tab,focusTab=false){
     }
     main.append(grid);
     if(focusTab)nav.querySelector('button.selected')?.focus();
+  },
+
+travel(source,place,onReturn){
+    const origin=source.scene.key==='Neighborhood'?source.returnKey:source.scene.key;
+    const quest=source.scene.key==='Neighborhood'?source.returnQuest:{text:source.ui.questText.text,visible:source.ui.questContainer.visible};
+    const data={returnKey:origin,place,storyEra:source.storyEra||ERA_BY_SCENE[source.scene.key]||'e'+this.state().era,returnQuest:quest,onReturn};
+    if(source.scene.key==='Neighborhood'){data.onReturn=source.onReturn||onReturn;source.scene.restart(data);}
+    else{source.scene.pause();source.scene.launch('Neighborhood',data);}
   },
 });

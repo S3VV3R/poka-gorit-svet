@@ -7,6 +7,7 @@ GameplayScene.prototype.update=function(time,delta){
 };
 const homeActivity=Chronicle.activity;
 Chronicle.activity=async function(sc,id,options={}){
+  if(KidsKitchen.matches(sc,id))return KidsKitchen.run(sc);
   if(sc._homeLife && !this.actionReason(id))await HomeLife.animate(sc,id);
   const result=await homeActivity.call(this,sc,id,options);
   if(result && sc._homeLife)HomeLife.record(sc,id);
